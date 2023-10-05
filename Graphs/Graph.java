@@ -1,72 +1,82 @@
 package it.graphs;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 public class Graph {
 
-	// creo la struttura che deve contenere il mio grafo
-	ArrayList<LinkedList<Node>> graffo; 
+	// questa volta useremo le matrici di adiacenza per poi fare DFS 
+	// non liste di adiacenza, il concetto è simile 
 	
-	public Graph() {
+	ArrayList<Node> nodes; 
+	int[][] matirx; 
+	
+	public Graph(int size) {
 		// TODO Auto-generated constructor stub
-		
-		// dobbiamo istanziare i nostri campi o con la new o con this. = 
-		
-		graffo = new ArrayList<>();
-		
-	}
+		nodes = new ArrayList<>();
+		this.matirx = new int[size][size];
 	
-	// dichiariamoci i metodi 
+	}
 	
 	public void addNode(Node node) {
-		LinkedList<Node> currentList = new LinkedList<Node>();
-
-		currentList.add(node);	// viene aggiunto in testa 
-		
-		graffo.add(currentList);	// lo aggiungo in testa al ArrayList 
-		
-	
+		nodes.add(node);
 	}
 	
-	public void addEdge(int src,int dst) {
-		
-		LinkedList<Node> currentList = graffo.get(src);	// prende la testa 
-		
-		Node dstNode = graffo.get(dst).get(0);	// la posizione del nodo che vogliamo aggiungere 
-		
-		// DOBBIAMO AGGIUNGERLO QUINDI IN CODA ALLA NOSTRA LISTA 
-		
-		currentList.addLast(dstNode);
-	
-		
+	public void addEdge(int src, int dst) {
+		matirx[src][dst] = 1;
 	}
 	
-	public boolean checkEdge(int src,int dst) {
-		
-		LinkedList<Node> currentList = graffo.get(src);	// prendiamo la testa della lista 
-		// poi prendiamo la destinazione per poter cercare 
-		Node dstNode = graffo.get(dst).get(0);
-		
-		// abbiamo la testa e la coda 
-		
-		for (Node n: currentList) {
-			if (n == dstNode) {	// controlliamo l'indirizzo
-				return true;
-			}
-		}	
-		return false;		
+	public boolean cehckNode(int src, int dst) {
+		if (matirx[src][dst] == 1)
+			return true;
+		else 
+			return false;
 	}
 	
 	public void print() {
-		// iteriamo per ciascuna linkedList presente nel grafo
-		for (LinkedList<Node> currentList : graffo) {
-			// iteriamo per ciascun nodo presente nella enn-esima linked list 
-			for (Node n: currentList) {
-				System.out.print(n.toChar() + " -> ");
+		
+		System.out.print("  ");
+		for (Node node: nodes) {
+			System.out.print(node.toChar() + " ");
+		}
+		
+		System.out.println();
+		
+		for (int i = 0; i < matirx.length; i++) {
+			System.out.print(this.nodes.get(i).data + " ");
+			for (int j = 0; j < matirx[i].length; j++) {
+				System.out.print(matirx[i][j] + " ");
 			}
 			System.out.println();
-		}	
+		}
+		
+	}
+	
+	public void dFS(int src) {
+		boolean[] visited = new boolean[matirx.length];
+		dFSHelper(src, visited);
+		
 	}
 
+	private void dFSHelper(int src, boolean []visited) {
+		
+		if (visited[src] == true) {	// se l'ho già visitato fine
+			return;
+		}
+		else {
+			visited[src] = true;	// altrimento ho appena visitato l'iesimo nodo
+			System.out.println(nodes.get(src).data + " = visited");	// stampo che il nodo + = visitato
+		}
+		
+		for (int i = 0; i < matirx[src].length; i++) {
+			if (matirx[src][i] == 1) { // src is the row, i is the column
+				dFSHelper(i,visited);	// ricorsione
+			}
+			
+		}
+		
+		return;
+	}
+	
+	
 }
+
